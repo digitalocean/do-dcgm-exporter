@@ -1,0 +1,27 @@
+name: deb-repo
+description: "Make a debian repo from a directory of .debs"
+inputs:
+  repo_root:
+    required: true
+    type: string
+  dist_pool:
+    required: true
+    type: string
+  private_key:
+    required: true
+    type: string
+  private_key_email:
+    required: true
+    type: string
+runs:
+  using: "composite"
+  steps:
+    - name: Create repo
+      shell: sh
+      env:
+        REPO_ROOT: ${{ inputs.repo_root }}
+        DIST_POOL: ${{ inputs.dist_pool }}
+        COMPONENT: extras
+        PRIVATE_KEY: ${{ inputs.private_key }}
+        PRIVATE_KEY_EMAIL: ${{ inputs.private_key_email }}
+      run: .github/actions/deb-repo/action.sh

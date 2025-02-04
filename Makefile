@@ -30,6 +30,14 @@ check: $(GOIMPORTS) $(GOLANGCI_LINT)
 build:
 	@env GOOS=linux GOARCH=amd64 CGO_ENABLED=1 go build -ldflags "-w -X github.com/digitalocean/do-dcgm-exporter/cmd/agent.version=${VERSION} -X github.com/digitalocean/do-dcgm-exporter/cmd/agent.dcgmExporterVersion=${DCGM_EXPORTER_VERSION} -X github.com/digitalocean/do-dcgm-exporter/cmd/agent.buildDate=${DATE}" -o bin/do-dcgm-exporter-linux-amd64 ./cmd/main.go
 
+install: INSTALL ?= install
+install: DESTDIR ?= debian/do-dcgm-exporter/
+install:
+	$(INSTALL) -s -D bin/do-dcgm-exporter-linux-amd64 $(DESTDIR)/opt/digitalocean/bin/do-dcgm-exporter
+
+debian/changelog:
+	debian/doch.pl > debian/changelog
+
 .PHONY: all
 all: format check build
 

@@ -1,0 +1,127 @@
+name: "build packages and repo"
+
+# TODO for transition to GH.com
+# change runners
+# update upload/download-artifact to v4
+# update upload-pages-artifact to v3
+# update depoy-pages to v4
+
+on:
+  push:
+    branches:
+      - "main"
+  workflow_dispatch:
+  pull_request:
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write    # to deploy to Pages
+  id-token: write # to verify the deployment originates from an appropriate source
+
+jobs:
+  build-package:
+    runs-on: ubuntu-${{matrix.distro}}
+    strategy:
+      fail-fast: false
+      matrix:
+        distro:
+          - 20.04  # Focal
+          - 22.04 # Jammy
+          - 24.04 # Noble
+    steps:
+      - name: "install dependencies"
+        env:
+          DEBIAN_FRONTEND: noninteractive
+        run: |
+          apt-get update
+          # for checkout and go
+          apt-get install -y git curl
+          # needed for bootstrapping mk-build-deps
+          apt-get install -y devscripts equivs
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref_name }} 
+          fetch-tags: true
+          fetch-depth: 0
+          show-progress: false
+      - name: "setup go environment"
+        id: go
+        uses: synced-actions/setup-go-faster@v1.14.0
+        with:
+          go-version: 1.23.0
+      - name: "compile + package"
+        run: |
+          git config --global --add safe.directory "$PWD"
+          debian/doch.pl --project do-dcgm-exporter --distribution ${{ matrix.distro }} > debian/changelog
+          mk-build-deps --install --tool='apt-get -o Debug::pkgProblemResolver=yes --no-install-recommends --yes' debian/control
+          make build
+          dpkg-buildpackage -b --no-sign
+
+          # don't include build-deps
+          rm *build-deps*.deb
+
+          dpkg -I ../*.deb
+          dpkg --contents ../*.deb
+          mv ../do-dcgm-exporter_*.deb .
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pool-${{ matrix.distro }}
+          path: '*.deb'
+
+  build-repo:
+    if: ${{ github.ref_type == 'tag' }}
+    runs-on: ubuntu-24.04
+    needs: build-package
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    outputs:
+      page_url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: "install dependencies"
+        env:
+          DEBIAN_FRONTEND: noninteractive
+        run: |
+          apt-get update
+          apt-get install -y git
+          apt-get install -y gpg dpkg-dev apt-utils
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: pool-20.04 # Focal
+          path: pool/20.04
+      - uses: actions/download-artifact@v4
+        with:
+          name: pool-22.04 # Jammy
+          path: pool/22.04
+      - uses: actions/download-artifact@v4
+        with:
+          name: pool-24.04 # Noble
+          path: pool/24.04
+      - name: "download existing pool .debs"
+        run: |
+          ls -la pool/*
+      - uses: ./.github/actions/deb-repo
+        with:
+          repo_root: repo_root
+          dist_pool: pool # [20.04, 22.04, 24.04]
+          private_key: ${{ secrets.PRIVATE_KEY }}
+          private_key_email: ${{ secrets.PRIVATE_KEY_EMAIL }}
+      - uses: actions/configure-pages@v3
+        with:
+          enablement: true
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: 'repo_root'
+      - uses: actions/deploy-pages@v3
+        id: deployment
+
+  test-repo:
+    runs-on: ubuntu-24.04
+    needs: build-repo
+    steps:
+      - name: test
+        run: |
+          echo ${{ needs.build-repo.outputs.page_url }}

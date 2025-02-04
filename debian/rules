@@ -1,0 +1,19 @@
+#! /usr/bin/make -f
+
+ifeq (0,$(shell dpkg-vendor --derives-from Ubuntu; echo $$?))
+  KEYRING := ubuntu-keyring
+else ifeq (0,$(shell dpkg-vendor --derives-from Tanglu; echo $$?))
+  KEYRING := tanglu-archive-keyring
+else ifeq (0,$(shell dpkg-vendor --derives-from Kali; echo $$?))
+  KEYRING := kali-archive-keyring
+else
+  KEYRING := debian-archive-keyring
+endif
+
+%:
+	dh $@
+
+override_dh_auto_build: bin/do-dcgm-exporter-linux-amd64
+
+override_dh_auto_test:
+override_dh_dwz:
