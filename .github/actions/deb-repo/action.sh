@@ -15,7 +15,19 @@ ORIGIN="DigitalOcean"
 DESCRIPTION="do-dcgm-exporter repository from DigitalOcean"
 DATE=$(date "+%a, %d %b %+4Y %T UTC")
 
+export GPG_TTY=$(tty)
+
 echo "$PRIVATE_KEY" > private.asc
+ls -lh .
+wc private.asc
+
+#echo "checking if there is pgp agent"
+#pgrep gpg-agent
+#echo "is there a gpg-agent"
+#which gpg-agent
+
+#gpg-agent --daemon
+
 gpg --import private.asc
 
 REPO_ROOT="${REPO_ROOT}/ubuntu"
@@ -44,7 +56,6 @@ for dist in "$DIST_POOL"/*; do
 		-o "APT::FTPArchive::Release::Label=$ORIGIN" \
 		-o "APT::FTPArchive::Release::Suite=$DIST" \
 		-o "APT::FTPArchive::Release::Codename=$DIST" \
-		#-o "APT::FTPArchive::Release::Version=${version_map[${DIST}]}" \
 		-o "APT::FTPArchive::Release::Version=${DIST}" \
 		-o "APT::FTPArchive::Release::Date=$DATE" \
 		-o "APT::FTPArchive::Release::Architectures=amd64" \
