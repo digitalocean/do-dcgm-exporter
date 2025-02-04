@@ -110,7 +110,7 @@ jobs:
       - uses: actions/upload-pages-artifact@v3
         with:
           path: 'repo_root'
-      - uses: actions/deploy-pages@v3
+      - uses: actions/deploy-pages@v4
         id: deployment
 
   test-repo:
