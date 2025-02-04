@@ -106,7 +106,7 @@ jobs:
       - uses: ./.github/actions/deb-repo
         with:
           repo_root: repo_root
-          dist_pool: pool # [20.04, 22.04, 24.04]
+          dist_pool: pool # filepath under which the .debs are
           private_key: ${{ secrets.PRIVATE_KEY }}
           private_key_email: ${{ secrets.PRIVATE_KEY_EMAIL }}
       - uses: actions/configure-pages@v3

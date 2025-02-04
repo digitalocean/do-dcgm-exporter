@@ -45,7 +45,7 @@ for dist in "$DIST_POOL"/*; do
 		-o "APT::FTPArchive::Release::Suite=$DIST" \
 		-o "APT::FTPArchive::Release::Codename=$DIST" \
 		#-o "APT::FTPArchive::Release::Version=${version_map[${DIST}]}" \
-		-o "APT::FTPArchive::Release::Version=${DIST}}" \
+		-o "APT::FTPArchive::Release::Version=${DIST}" \
 		-o "APT::FTPArchive::Release::Date=$DATE" \
 		-o "APT::FTPArchive::Release::Architectures=amd64" \
 		-o "APT::FTPArchive::Release::Components=$COMPONENT" \
