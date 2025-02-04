@@ -104,7 +104,7 @@ jobs:
           dist_pool: pool # filepath under which the .debs are
           private_key: ${{ secrets.PRIVATE_KEY }}
           private_key_email: ${{ secrets.PRIVATE_KEY_EMAIL }}
-      - uses: actions/configure-pages@v3
+      - uses: actions/configure-pages@v5
         with:
           enablement: true
       - uses: actions/upload-pages-artifact@v3
