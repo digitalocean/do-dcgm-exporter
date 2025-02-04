@@ -54,15 +54,15 @@ jobs:
         run: |
           git config --global --add safe.directory "$PWD"
           debian/doch.pl --project do-dcgm-exporter --distribution ${{ matrix.distro }} > debian/changelog
-          mk-build-deps --install --tool='apt-get -o Debug::pkgProblemResolver=yes --no-install-recommends --yes' debian/control
-          make build
-          dpkg-buildpackage -b --no-sign
+          sudo mk-build-deps --install --tool='apt-get -o Debug::pkgProblemResolver=yes --no-install-recommends --yes' debian/control
+          sudo make build
+          sudo dpkg-buildpackage -b --no-sign
 
           # don't include build-deps
           rm *build-deps*.deb
 
-          dpkg -I ../*.deb
-          dpkg --contents ../*.deb
+          sudo dpkg -I ../*.deb
+          sudo dpkg --contents ../*.deb
           mv ../do-dcgm-exporter_*.deb .
       - uses: actions/upload-artifact@v4
         with:
