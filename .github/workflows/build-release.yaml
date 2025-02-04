@@ -1,13 +1,8 @@
 name: "build packages and repo"
 
-# TODO for transition to GH.com
-# change runners
-# update upload/download-artifact to v4
-# update upload-pages-artifact to v3
-# update depoy-pages to v4
-
 on:
   push:
+    tags: ['v*']
     branches:
       - "main"
   workflow_dispatch:
