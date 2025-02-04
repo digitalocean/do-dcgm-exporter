@@ -3,7 +3,7 @@ module github.com/digitalocean/do-dcgm-exporter
 go 1.23.0
 
 require (
-	// use go get github.com/NVIDIA/dcgm-exporter@<release-commit-hash> to add pseudo version based on commit has, as there are no semVer tagged versions on the git repository
+	// use go get github.com/NVIDIA/dcgm-exporter@<release-commit-hash> to add pseudo version based on commit hash, as there are no semVer tagged versions on the git repository
 	// based on commit: https://github.com/NVIDIA/dcgm-exporter/commit/402a10fd8bb4a36be7cc5b2c703cf8f1322d1ef0, with release "3.3.8-3.6.0"
 	// when updating to a higher dcgm-exporter release, please update the variable DCGM_EXPORTER_VERSION in the Makefile.
 	github.com/NVIDIA/dcgm-exporter v0.0.0-20240919185234-402a10fd8bb4
@@ -59,14 +59,14 @@ require (
 	github.com/prometheus/procfs v0.12.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/stretchr/testify v1.9.0 // indirect
-	golang.org/x/crypto v0.27.0 // indirect
+	golang.org/x/crypto v0.31.0 // indirect
 	golang.org/x/mod v0.21.0 // indirect
 	golang.org/x/net v0.29.0 // indirect
 	golang.org/x/oauth2 v0.18.0 // indirect
-	golang.org/x/sync v0.8.0 // indirect
-	golang.org/x/sys v0.25.0 // indirect
-	golang.org/x/term v0.24.0 // indirect
-	golang.org/x/text v0.18.0 // indirect
+	golang.org/x/sync v0.10.0 // indirect
+	golang.org/x/sys v0.28.0 // indirect
+	golang.org/x/term v0.27.0 // indirect
+	golang.org/x/text v0.21.0 // indirect
 	golang.org/x/time v0.5.0 // indirect
 	google.golang.org/appengine v1.6.8 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20240318140521-94a12d6c2237 // indirect
@@ -86,6 +86,7 @@ require (
 	sigs.k8s.io/yaml v1.4.0 // indirect
 )
 
-//replace (
-//	github.com/NVIDIA/dcgm-exporter => github.com/NVIDIA/dcgm-exporter 402a10fd8bb4a36be7cc5b2c703cf8f1322d1ef0
-//)
+replace (
+	golang.org/x/crypto => golang.org/x/crypto v0.31.0
+	golang.org/x/net => golang.org/x/net v0.33.0
+)
