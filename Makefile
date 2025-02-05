@@ -1,6 +1,7 @@
 DATE=$(shell date -u +%Y-%m-%d)
 VERSION=$(shell cat VERSION | sed 's/-dev//g')
 DCGM_EXPORTER_VERSION=$(shell cat VERSION_DCGM_EXPORTER | sed 's/-dev//g')
+DIST=$(shell lsb_release -c | cut -f2)
 
 #########################################
 # Tools                                 #
@@ -34,6 +35,10 @@ install: INSTALL ?= install
 install: DESTDIR ?= debian/do-dcgm-exporter/
 install:
 	$(INSTALL) -s -D bin/do-dcgm-exporter-linux-amd64 $(DESTDIR)/opt/digitalocean/bin/do-dcgm-exporter
+	mkdir -p $(DESTDIR)/etc/apt/trusted.gpg.d/
+	mkdir -p $(DESTDIR)/etc/apt/sources.list.d/
+	cp public.gpg $(DESTDIR)/etc/apt/trusted.gpg.d/do-dcgm-exporter.gpg
+	echo "deb https://digitalocean.github.io/do-dcgm-exporter/ubuntu/ $(DIST) extras" > $(DESTDIR)/etc/apt/sources.list.d/do-dcgm-exporter.list
 
 debian/changelog:
 	debian/doch.pl > debian/changelog
