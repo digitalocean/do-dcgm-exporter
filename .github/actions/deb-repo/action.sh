@@ -9,7 +9,7 @@ set -euo pipefail
 : "${PRIVATE_KEY_EMAIL:="$5"}"
 
 # repo metadata for the release file that is not auto-figured
-#declare -A version_map=(["focal"]="20.04" ["jammy"]="22.04" ["noble"]="24.04")
+declare -A version_map=(["focal"]="20.04" ["jammy"]="22.04" ["noble"]="24.04")
 
 ORIGIN="DigitalOcean"
 DESCRIPTION="do-dcgm-exporter repository from DigitalOcean"
@@ -20,13 +20,6 @@ export GPG_TTY=$(tty)
 echo "$PRIVATE_KEY" > private.asc
 ls -lh .
 wc private.asc
-
-#echo "checking if there is pgp agent"
-#pgrep gpg-agent
-#echo "is there a gpg-agent"
-#which gpg-agent
-
-#gpg-agent --daemon
 
 gpg --import private.asc
 
@@ -56,7 +49,7 @@ for dist in "$DIST_POOL"/*; do
 		-o "APT::FTPArchive::Release::Label=$ORIGIN" \
 		-o "APT::FTPArchive::Release::Suite=$DIST" \
 		-o "APT::FTPArchive::Release::Codename=$DIST" \
-		-o "APT::FTPArchive::Release::Version=${DIST}" \
+		-o "APT::FTPArchive::Release::Version=${version_map[${DIST}]}" \
 		-o "APT::FTPArchive::Release::Date=$DATE" \
 		-o "APT::FTPArchive::Release::Architectures=amd64" \
 		-o "APT::FTPArchive::Release::Components=$COMPONENT" \
