@@ -10,7 +10,7 @@ on:
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
-  contents: read
+  contents: write # write access required to attach .deb files to release
   pages: write    # to deploy to Pages
   id-token: write # to verify the deployment originates from an appropriate source
 
@@ -71,6 +71,14 @@ jobs:
           sudo dpkg -I ../*.deb
           sudo dpkg --contents ../*.deb
           mv ../do-dcgm-exporter_*.deb .
+          
+          # add focal/jammy/noble suffix to be able to distinguish when uploading to releases
+          for file in do-dcgm-exporter_*.deb; do
+            new_name="${file%%.deb*}-$OS_NAME.deb"
+            mv "$file" "$new_name"
+          done
+          
+          ls -lh
       - uses: actions/upload-artifact@v4
         with:
           name: pool-${{ env.OS_NAME }}
@@ -107,9 +115,36 @@ jobs:
         with:
           name: pool-noble
           path: pool/noble
-      - name: "download existing pool .debs"
+      - name: "upload .debs to Github releases/tag"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           ls -la pool/*
+          gh release list
+          for file in **/**/do-dcgm-exporter_*.deb; do
+            echo "uploading $file for tag ${{ github.ref_name }}"
+            # relies on the github release having the same name as the tag!
+            gh release upload ${{ github.ref_name }} $file
+          done
+
+#      - name: Upload focal .deb to release
+#        uses: AButler/upload-release-assets@v3.0
+#        with:
+#          files: 'pool/focal/*.deb'
+#          repo-token: ${{ secrets.GITHUB_TOKEN }}
+#          release-tag: ${{ github.ref_name }}
+#      - name: Upload jammy .deb to release
+#        uses: AButler/upload-release-assets@v3.0
+#        with:
+#          files: 'pool/jammy/*.deb'
+#          repo-token: ${{ secrets.GITHUB_TOKEN }}
+#          release-tag: ${{ github.ref_name }}
+#      - name: Upload noble .deb to release
+#        uses: AButler/upload-release-assets@v3.0
+#        with:
+#          files: 'pool/noble/*.deb'
+#          repo-token: ${{ secrets.GITHUB_TOKEN }}
+#          release-tag: ${{ github.ref_name }}
       - uses: ./.github/actions/deb-repo
         with:
           repo_root: repo_root

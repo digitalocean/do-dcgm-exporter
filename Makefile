@@ -39,6 +39,7 @@ install:
 	mkdir -p $(DESTDIR)/etc/apt/sources.list.d/
 	cp public.gpg $(DESTDIR)/etc/apt/trusted.gpg.d/do-dcgm-exporter.gpg
 	echo "deb https://digitalocean.github.io/do-dcgm-exporter/ubuntu/ $(DIST) extras" > $(DESTDIR)/etc/apt/sources.list.d/do-dcgm-exporter.list
+	cp hack/systemd/do-dcgm-exporter.service /etc/systemd/system/do-dcgm-exporter.service
 
 debian/changelog:
 	debian/doch.pl > debian/changelog
