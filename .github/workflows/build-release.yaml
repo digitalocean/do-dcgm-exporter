@@ -122,29 +122,11 @@ jobs:
           ls -la pool/*
           gh release list
           for file in **/**/do-dcgm-exporter_*.deb; do
-            echo "uploading $file for tag ${{ github.ref_name }}"
+            echo "uploading $file for release with name ${{ github.ref_name }}"
             # relies on the github release having the same name as the tag!
             gh release upload ${{ github.ref_name }} $file
           done
 
-#      - name: Upload focal .deb to release
-#        uses: AButler/upload-release-assets@v3.0
-#        with:
-#          files: 'pool/focal/*.deb'
-#          repo-token: ${{ secrets.GITHUB_TOKEN }}
-#          release-tag: ${{ github.ref_name }}
-#      - name: Upload jammy .deb to release
-#        uses: AButler/upload-release-assets@v3.0
-#        with:
-#          files: 'pool/jammy/*.deb'
-#          repo-token: ${{ secrets.GITHUB_TOKEN }}
-#          release-tag: ${{ github.ref_name }}
-#      - name: Upload noble .deb to release
-#        uses: AButler/upload-release-assets@v3.0
-#        with:
-#          files: 'pool/noble/*.deb'
-#          repo-token: ${{ secrets.GITHUB_TOKEN }}
-#          release-tag: ${{ github.ref_name }}
       - uses: ./.github/actions/deb-repo
         with:
           repo_root: repo_root
