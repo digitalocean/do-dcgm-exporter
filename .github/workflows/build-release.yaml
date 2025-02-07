@@ -124,7 +124,7 @@ jobs:
           for file in **/**/do-dcgm-exporter_*.deb; do
             echo "uploading $file for release with name ${{ github.ref_name }}"
             # relies on the github release having the same name as the tag!
-            gh release upload ${{ github.ref_name }} $file
+            gh release upload --clobber ${{ github.ref_name }} $file
           done
 
       - uses: ./.github/actions/deb-repo
