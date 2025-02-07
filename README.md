@@ -19,9 +19,9 @@ Requires [DCGM](https://developer.nvidia.com/dcgm) and [NVIDIA drivers](https://
 
 # Installation
 
-TODO: publish package
+Please see the [installation documentation](docs/install.md).
 
-To build the DigitalOcean DCGM export manually, please see [here](docs/build.md)
+To build the DigitalOcean DCGM exporter manually, please see [here](docs/build.md).
 
 # Conflict with existing DCGM installation
 
