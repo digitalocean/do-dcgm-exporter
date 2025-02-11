@@ -1,8 +1,50 @@
-# Manual Installation 
+# Prerequisite
+
+1. The DigitalOcean DCGM-Exporter exporter is assumed to run on DigitalOcean droplets.
+2. Nvidia drivers must be installed. Verify that the binary `nvidia-smi` is available and can discover GPUs and NVSwitches.
+   - When using the default OS base image for GPU droplet (currently named `AI/ML ready`), the NVIDIA drivers are already preinstalled.
+
+```bash
+# output for a droplet with a single H100 GPU
+root@myGPUDroplet:~# nvidia-smi
+Tue Feb 11 21:20:03 2025
++---------------------------------------------------------------------------------------+
+| NVIDIA-SMI 535.216.01             Driver Version: 535.216.01   CUDA Version: 12.2     |
+|-----------------------------------------+----------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |         Memory-Usage | GPU-Util  Compute M. |
+|                                         |                      |               MIG M. |
+|=========================================+======================+======================|
+|   0  NVIDIA H100 80GB HBM3          On  | 00000000:00:09.0 Off |                    0 |
+| N/A   29C    P0              73W / 700W |      0MiB / 81559MiB |      0%      Default |
+|                                         |                      |             Disabled |
++-----------------------------------------+----------------------+----------------------+
+```
+
+3. NVIDIA Data Center GPU Manager [(DCGM)](https://developer.nvidia.com/dcgm) must be installed
+- Installation of DCGM in a DigitalOcean Droplet usually simply involves the following commands
+```bash
+$ sudo apt install datacenter-gpu-manager
+$ sudo systemctl --now enable nvidia-dcgm
+
+# output for a droplet with a single H100 GPU
+root@myGPUDroplet:~# dcgmi discovery -l
+1 GPU found.
++--------+----------------------------------------------------------------------+
+| GPU ID | Device Information                                                   |
++--------+----------------------------------------------------------------------+
+| 0      | Name: NVIDIA H100 80GB HBM3                                          |
+|        | PCI Bus ID: 00000000:00:09.0                                         |
+|        | Device UUID: GPU-abc                |
++--------+----------------------------------------------------------------------+
+0 NvSwitches found.
+```
+
+# Manual Installation of the DigitalOcean DCGM-Exporter
 
 Please see [build.md](build.md).
 
-# Installation on Ubuntu/Debian via apt package
+# Installation of the DigitalOcean DCGM-Exporter on Ubuntu/Debian via apt package
 Download the `apt` package in `.deb` format for your OS version from the release page: https://github.com/digitalocean/do-dcgm-exporter/releases.
 
 Install the package from the local filesystem

@@ -21,7 +21,7 @@ Requires [DCGM](https://developer.nvidia.com/dcgm) and [NVIDIA drivers](https://
 
 Please see the [installation documentation](docs/install.md).
 
-To build the DigitalOcean DCGM exporter manually, please see [here](docs/build.md).
+To build the DigitalOcean DCGM-Exporter manually, please see [here](docs/build.md).
 
 # Conflict with existing DCGM installation
 
@@ -31,11 +31,11 @@ Hence, to run the DigitalOcean dcgm-exporter next to the NVIDIA [dcgm-exporter](
 - please create a [standalone installation of DCGM](https://docs.digitalocean.com/products/droplets/how-to/gpu/enable-metrics/#install-dcgm).
 - configure the NVIDIA [dcgm-exporter](https://github.com/NVIDIA/dcgm-exporter) to connect to the remote `nv-hostengine` serving on `localhost:5555` (via flag `-r localhost:5555`).
 
-The DigitalOcean DCGM exporter connects to a `nv-hostengine` process serving on `localhost:5555`.
+The DigitalOcean DCGM-Exporter connects to a `nv-hostengine` process serving on `localhost:5555`.
 
 # Testing Restrictions
 
-The DigitalOcean DCGM exporter is a thin wrapper around the DCGM-Exporter.
+The DigitalOcean DCGM-Exporter is a thin wrapper around the DCGM-Exporter.
 While this has the benefit of being able to reuse functionality, it restricts the DigitalOcean DCGM-Exporter to the boundaries setup by the DCGM-Exporter code.
 Specifically, variables required for [mocking hardware (GPUs, NVSwitches, ...) are not exported](https://github.com/NVIDIA/dcgm-exporter/blob/rel_3.3.6-3.4.2/pkg/dcgmexporter/system_info.go#L31).
 
