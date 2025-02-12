@@ -45,13 +45,20 @@ root@myGPUDroplet:~# dcgmi discovery -l
 Please see [build.md](build.md).
 
 # Installation of the DigitalOcean DCGM-Exporter on Ubuntu/Debian via apt package
-Download the `apt` package in `.deb` format for your OS version from the release page: https://github.com/digitalocean/do-dcgm-exporter/releases.
+Download the `apt` package in `.deb` format for your OS version 
+- from the Github release page: https://github.com/digitalocean/do-dcgm-exporter/releases
+- or from Github pages (see below)
+```bash
+OS_RELEASE_VERSION=jammy # focal, jammy, noble
+DO_DCGM_EXPORTER_VERSION=0.0.1
+wget https://digitalocean.github.io/do-dcgm-exporter/ubuntu/pool/${OS_RELEASE_VERSION}/do-dcgm-exporter_${DO_DCGM_EXPORTER_VERSION}_amd64-${OS_RELEASE_VERSION}.deb
+```
 
-Install the package from the local filesystem
+Next, install the package from the local filesystem
 - sets up `/etc/apt/sources.list.d/do-dcgm-exporter.list` for future package upgrades
 - creates `/etc/systemd/system/do-dcgm-exporter.service`
 ```
-$ sudo apt install do-dcgm-exporter_0.0.1_amd64-jammy.deb
+$ sudo apt install do-dcgm-exporter_${DO_DCGM_EXPORTER_VERSION}_amd64-${OS_RELEASE_VERSION}.deb
 ```
 
 Then start the `do-dcgm-exporter.service` service
